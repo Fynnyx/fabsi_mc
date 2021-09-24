@@ -1,0 +1,75 @@
+{
+  "properties": {
+    "token": "",
+    "prefix": "-",
+    "discord_link": "https://discord.gg/9VCKxCZgKW",
+    "status": {
+      "time": 7,
+      "messages": [
+        "Twitch: ttv/fabsi_mc"
+      ]
+    },
+    "events": {
+      "on_member_join": {
+        "welcome_channel": 889827780395663371,
+        "rules_channel": 889581188933640242,
+        "info_channel": 889827828286230548
+      },
+      "twitch": {
+        "client_id": "ccoafffxwpx6ossjd1v7xa85e9qts3",
+        "client_secret": "aca45bmhhjgmgda1x2m0foskszt1x7",
+        "streamer": "Fabsi_MC",
+        "last_stream_id": "43801728013",
+        "twitch_channel": 889820230757543968,
+        "twitch_role": 889819765311426591
+      },
+      "blacklist": {
+          "blacklist": [
+              "fuck you",
+              "fick dich"
+          ]
+      }
+    },
+    "commands": {
+      "help": {
+        "description": "Show all available commands with description.",
+        "aliases": [
+          "h"
+        ],
+        "permissions": [
+          "Everyone"
+        ]
+      },
+      "clear": {
+        "description": "Clear an specific amount of messages",
+        "aliases": [],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ]
+      },
+      "stage": {
+        "description": "Create an stage channel in the Record/Live Category",
+        "aliases": [],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ],
+        "category_id": 889823788949176350
+      },
+      "social_media": {
+        "description": "Send all Social Media links",
+        "aliases": [
+          "sm"
+        ],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ],
+        "links": {
+          "twitch": "https://twitch.tv/fabsi_mc"
+        }
+      }
+    }
+  }
+}
