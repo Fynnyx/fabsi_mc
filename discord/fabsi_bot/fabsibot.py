@@ -170,9 +170,20 @@ async def stage(ctx, *, name):
         name = "🔴 " + name
         s_channel = await ctx.guild.create_stage_channel(name, category=category, position=1)
         # await s_channel.set_permissions(s_channel, overwrite=None)
-        await ctx.channel.send("Created Stage channel: " + name)
+        msg = await ctx.channel.send("Created Stage channel: " + name)
+        await asyncio.sleep(4)
+        await msg.delete()
     else:
         await ctx.message.delete()
+
+@client.command()
+async def delstage(ctx):
+    category = discord.utils.get(ctx.guild.categories, name="-- 🔴 Record/Live --")
+    for channel in category.stage_channels:
+        await channel.delete()
+        msg = await ctx.send('Deleted: %s' % (channel.name))
+        await asyncio.sleep(4)
+        await msg.delete()
 
 @client.command(aliases=data["properties"]["commands"]["social_media"]["aliases"])
 async def social_media(ctx):
