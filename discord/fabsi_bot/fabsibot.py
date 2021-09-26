@@ -98,7 +98,6 @@ async def on_ready():
     client.loop.create_task(status_task())
     # client.loop.create_task(twitch())
 
-
 # Moderator ---------------------------------------------------------------------------
 
 @client.command(aliases=data["properties"]["commands"]["clear"]["aliases"])
@@ -124,6 +123,42 @@ async def send_deleted_msgs(amount, channel):
     msg = await channel.send("🗑Deleted `%s` messages" % amount)
     await asyncio.sleep(2)
     await msg.delete()
+
+@client.command(aliases=data["properties"]["commands"]["rules"]["aliases"])
+async def rules(ctx):
+    if await check_permissions("rules", ctx.message.author, ctx.message.channel):
+        with open("properties.json", encoding='UTF-8') as f:
+            data = json.load(f)
+
+            rules = data["properties"]["information"]["rules"]["rules"]
+            rule_channel = data["properties"]["information"]["rules"]["channel"]
+            counter = 0
+
+            rules_embed = discord.Embed(title="-- Regeln für Fabsi's Discord --",
+                                            description="Im folgenden Text werden die Regeln des BastiGHG Discord Server aufgelistet.\n**Wenn du mit dem Discord Server interagierst (schreiben, reden, lesen, usw.), stimmst Du den Regeln zu!**", 
+                                            color=discord.Color.dark_purple())
+            rules_embed.add_field(name="§%s - |" % (str(counter)),
+                                    value="Die [Discord Nutzungsbedingungen](https://discord.com/terms) müssen, wie die [Discord Community-Richtlinien](https://discord.com/guidelines) befolgt werden.",
+                                    inline=False)
+            counter = counter + 1
+
+            for rule in rules:
+                counter = counter + 1
+                rules_embed.add_field(name="§%s - |" % (str(counter)), value=rule, inline=False)
+            
+            rules_embed.add_field(name="\u200b", value='-----------------------------')
+            rules_embed.add_field(name="⛔ - Bei Verstoss - ⛔", 
+                                    value='Bei Verstössen kann es zu einem Verwarnung, Timeout oder Bann kommen.\n Der Server Owner und die Moderatoren haben das Recht diese Regeln durchzusetzen.',
+                                    inline=False)
+
+            channel = client.get_channel(rule_channel)
+            await ctx.message.delete()
+            await channel.send(embed=rules_embed)
+                            
+    else:
+        await ctx.message.delete()
+
+# Listeners ---------------------------------------------------------------------------
 
 
 @client.command(aliases=data["properties"]["commands"]["verify"]["aliases"])
