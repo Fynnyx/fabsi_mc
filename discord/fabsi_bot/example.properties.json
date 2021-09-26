@@ -1,6 +1,6 @@
 {
   "properties": {
-    "token": "",
+    "token": "REPLACEWITHTOKEN",
     "prefix": "-",
     "discord_link": "https://discord.gg/9VCKxCZgKW",
     "status": {
@@ -9,25 +9,43 @@
         "Twitch: ttv/fabsi_mc"
       ]
     },
+    "information": {
+      "rules": {
+        "channel": 889581188933640242,
+        "rules": [
+          "Keine Beleidigungen!",
+          "Kein Rassismus!",
+          "Nicht unnötig spamen!",
+          "Anweisungen der Mods sind zu befolgen.",
+          "Keine Werbung machen.",
+          "Keinen Handel treiben über diesen server (zb. Fortnite verkaufen).",
+          "Jeder hat die Möglichkeit sich einen Nickbame zu geben, dieser darf jedoch nicht der Name eines anderen Mitgliedes sein oder beleidigend sein für jemand anderen.",
+          "Die Regeln dürfen jederzeit von einem Moderator geändert werden.",
+          "Du bist für das verantwortlich was auf deinem Account passiert, also wen deine Katze mit deinem Handy jemandem beleidigt bist du dafür verantwortlich.",
+          "Unwissenheit schützt vor Strafe nicht! Wer diesem Server joined hat automatisch die Regeln zu befolgen. ",
+          "Spaß haben :)"
+        ]
+      }
+    },
     "events": {
       "on_member_join": {
         "welcome_channel": 889827780395663371,
         "rules_channel": 889581188933640242,
-        "info_channel": 889827828286230548
+        "info_channel": 891037486577483806
       },
       "twitch": {
         "client_id": "ccoafffxwpx6ossjd1v7xa85e9qts3",
         "client_secret": "aca45bmhhjgmgda1x2m0foskszt1x7",
         "streamer": "Fabsi_MC",
-        "last_stream_id": "43801728013",
+        "last_stream_id": "43351719516",
         "twitch_channel": 889820230757543968,
         "twitch_role": 889819765311426591
       },
       "blacklist": {
-          "blacklist": [
-              "fuck you",
-              "fick dich"
-          ]
+        "blacklist": [
+          "fuck you",
+          "fick dich"
+        ]
       }
     },
     "commands": {
@@ -48,9 +66,32 @@
           "Moderator"
         ]
       },
+      "rules": {
+        "description": "Send the rules in the rules channel",
+        "aliases": [
+          "rule"
+        ],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ]
+      },
       "stage": {
         "description": "Create an stage channel in the Record/Live Category",
         "aliases": [],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ],
+        "category_id": 889823788949176350
+      },
+      "delstage": {
+        "description": "Deletes all stage channel in the Record/Live Category",
+        "aliases": [
+          "dstage",
+          "deletestage",
+          "delete_stage"
+        ],
         "permissions": [
           "Server Owner",
           "Moderator"
@@ -63,12 +104,20 @@
           "sm"
         ],
         "permissions": [
-          "Server Owner",
-          "Moderator"
+          "Everyone"
         ],
         "links": {
           "twitch": "https://twitch.tv/fabsi_mc"
         }
+      },
+      "twitch": {
+        "description": "Send the twitch link if the streamer is live",
+        "aliases": [],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ],
+        "category_id": 889823788949176350
       }
     }
   }
