@@ -15,15 +15,16 @@
         "rules": [
           "Keine Beleidigungen!",
           "Kein Rassismus!",
-          "Nicht unnötig spamen!",
+          "Nicht unn\u00f6tig spamen!",
+          "Bannumgehungen durch 2. Accounts werden nicht geduldet",
           "Anweisungen der Mods sind zu befolgen.",
           "Keine Werbung machen.",
-          "Keinen Handel treiben über diesen server (zb. Fortnite verkaufen).",
-          "Jeder hat die Möglichkeit sich einen Nickbame zu geben, dieser darf jedoch nicht der Name eines anderen Mitgliedes sein oder beleidigend sein für jemand anderen.",
-          "Die Regeln dürfen jederzeit von einem Moderator geändert werden.",
-          "Du bist für das verantwortlich was auf deinem Account passiert, also wen deine Katze mit deinem Handy jemandem beleidigt bist du dafür verantwortlich.",
-          "Unwissenheit schützt vor Strafe nicht! Wer diesem Server joined hat automatisch die Regeln zu befolgen. ",
-          "Spaß haben :)"
+          "Keinen Handel treiben \u00fcber diesen server (Z.b. Fortnite Account).",
+          "Jeder hat die M\u00f6glichkeit sich einen Nickbame zu geben, dieser darf jedoch nicht der Name eines anderen Mitgliedes sein oder beleidigend sein f\u00fcr jemand anderen.",
+          "Die Regeln d\u00fcrfen jederzeit von einem Moderator ge\u00e4ndert werden.",
+          "Du bist f\u00fcr das verantwortlich was auf deinem Account passiert, also wen deine Katze mit deinem Handy jemandem beleidigt bist du daf\u00fcr verantwortlich.",
+          "Unwissenheit sch\u00fctzt vor Strafe nicht! Wer diesem Server joined hat automatisch die Regeln zu befolgen. ",
+          "Spa\u00df haben \ud83d\ude04"
         ]
       }
     },
@@ -31,15 +32,23 @@
       "on_member_join": {
         "welcome_channel": 889827780395663371,
         "rules_channel": 889581188933640242,
-        "info_channel": 891037486577483806
+        "info_channel": 891037486577483806,
+        "role": 891722460804812870
       },
       "twitch": {
         "client_id": "ccoafffxwpx6ossjd1v7xa85e9qts3",
         "client_secret": "aca45bmhhjgmgda1x2m0foskszt1x7",
         "streamer": "Fabsi_MC",
-        "last_stream_id": "43351719516",
+        "last_stream_id": "43372316364",
         "twitch_channel": 889820230757543968,
         "twitch_role": 889819765311426591
+      },
+      "on_reaction_add": {
+        "verify": {
+          "role": 889871084042743839,
+          "channel": 891723260742492240,
+          "emoji": "\u2705"
+        }
       },
       "blacklist": {
         "blacklist": [
@@ -60,6 +69,14 @@
       },
       "clear": {
         "description": "Clear an specific amount of messages",
+        "aliases": [],
+        "permissions": [
+          "Server Owner",
+          "Moderator"
+        ]
+      },
+      "verify": {
+        "description": "Send the verify message",
         "aliases": [],
         "permissions": [
           "Server Owner",
