@@ -98,6 +98,7 @@ async def on_ready():
     client.loop.create_task(status_task())
     # client.loop.create_task(twitch())
 
+
 # Moderator ---------------------------------------------------------------------------
 
 @client.command(aliases=data["properties"]["commands"]["clear"]["aliases"])
@@ -119,20 +120,24 @@ async def clear(ctx, amount:str):
     else:
         await ctx.message.delete()
 
-
 async def send_deleted_msgs(amount, channel):
     msg = await channel.send("🗑Deleted `%s` messages" % amount)
     await asyncio.sleep(2)
     await msg.delete()
 
+
 @client.command(aliases=data["properties"]["commands"]["verify"]["aliases"])
 async def verify(ctx):
-    verify_emoji = data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"]
-    await ctx.channel.purge()
-    verify_embed = discord.Embed(colour=discord.Colour(0x29485e), 
-                    description="By clicking/tapping on " + verify_emoji + " below, you agree with the rules on this server.")
-    msg = await ctx.channel.send(embed=verify_embed)
-    await msg.add_reaction(verify_emoji)
+    if await check_permissions("clear", ctx.message.author, ctx.channel):
+        verify_emoji = data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"]
+        await ctx.channel.purge()
+        verify_embed = discord.Embed(colour=discord.Colour(0x29485e), 
+                        description="By clicking/tapping on " + verify_emoji + " below, you agree with the rules on this server.")
+        msg = await ctx.channel.send(embed=verify_embed)
+        await msg.add_reaction(verify_emoji)
+    else:
+        await ctx.message.delete()
+
 
 @client.command(aliases=data["properties"]["commands"]["rules"]["aliases"])
 async def rules(ctx):
@@ -187,6 +192,7 @@ async def blacklist(message):
         if x in message.content:
             await message.channel.send("<@&889822969596088320> Die Nachricht verwendet geblockte Wörter") 
             
+
 @client.event
 async def on_reaction_add(reaction, user):
     channel = reaction.message.channel
