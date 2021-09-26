@@ -3,6 +3,7 @@ from operator import add
 from os import scandir
 import discord
 from discord import Member
+from discord import channel
 from discord.ext import commands
 import discord.utils
 import asyncio
@@ -97,15 +98,6 @@ async def on_ready():
     client.loop.create_task(status_task())
     # client.loop.create_task(twitch())
 
-@client.event
-async def on_member_join(member):
-    channel_id = int(data["properties"]["events"]["on_member_join"]["welcome_channel"])
-    channel = await client.fetch_channel(channel_id)
-    rule_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["rules_channel"])
-    info_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["info_channel"])
-    await channel.send("Hey <@" + str(member.id) + "> schön dass du auf Fabsi's Server gejoint bis, lies dir bitte die Regeln in <#" + str(rule_channel.id) + "> durch und schau in <#" + str(info_channel.id) + "> für mehr Informationen.")
-
-
 # Moderator ---------------------------------------------------------------------------
 
 @client.command(aliases=data["properties"]["commands"]["clear"]["aliases"])
@@ -126,7 +118,6 @@ async def clear(ctx, amount:str):
                 await send_error("Please try this format -> `-clear [amount(number)]`", channel)
     else:
         await ctx.message.delete()
-
 
 async def send_deleted_msgs(amount, channel):
     msg = await channel.send("🗑Deleted `%s` messages" % amount)
@@ -170,12 +161,86 @@ async def rules(ctx):
 # Listeners ---------------------------------------------------------------------------
 
 
+@client.command(aliases=data["properties"]["commands"]["verify"]["aliases"])
+async def verify(ctx):
+    if await check_permissions("clear", ctx.message.author, ctx.channel):
+        verify_emoji = data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"]
+        await ctx.channel.purge()
+        verify_embed = discord.Embed(colour=discord.Colour(0x29485e), 
+                        description="By clicking/tapping on " + verify_emoji + " below, you agree with the rules on this server.")
+        msg = await ctx.channel.send(embed=verify_embed)
+        await msg.add_reaction(verify_emoji)
+    else:
+        await ctx.message.delete()
+
+
+@client.command(aliases=data["properties"]["commands"]["rules"]["aliases"])
+async def rules(ctx):
+    if await check_permissions("rules", ctx.message.author, ctx.message.channel):
+        with open("properties.json", encoding='UTF-8') as f:
+            data = json.load(f)
+
+            rules = data["properties"]["information"]["rules"]["rules"]
+            rule_channel = data["properties"]["information"]["rules"]["channel"]
+            counter = 1
+
+            rules_embed = discord.Embed(title="-- Regeln für Fabsi's Discord --",
+                                            description="Im folgenden Text werden die Regeln des BastiGHG Discord Server aufgelistet.\n**Wenn du mit dem Discord Server interagierst (schreiben, reden, lesen, usw.), stimmst Du den Regeln zu!**", 
+                                            color=discord.Color.dark_purple())
+            rules_embed.add_field(name="§%s - |" % (str(counter)),
+                                    value="Die [Discord Nutzungsbedingungen](https://discord.com/terms) müssen, wie die [Discord Community-Richtlinien](https://discord.com/guidelines) befolgt werden.",
+                                    inline=False)
+
+            for rule in rules:
+                counter = counter + 1
+                rules_embed.add_field(name="§%s - |" % (str(counter)), value=rule, inline=False)
+            
+            rules_embed.add_field(name="\u200b", value='-----------------------------')
+            rules_embed.add_field(name="⛔ - Bei Verstoss - ⛔", 
+                                    value='Bei Verstössen kann es zu einem Verwarnung, Timeout oder Bann kommen.\n Der Server Owner und die Moderatoren haben das Recht diese Regeln durchzusetzen.',
+                                    inline=False)
+
+            channel = client.get_channel(rule_channel)
+            await ctx.message.delete()
+            await channel.send(embed=rules_embed)
+                            
+    else:
+        await ctx.message.delete()
+
+# Listeners ---------------------------------------------------------------------------
+
+@client.event
+async def on_member_join(member):
+    channel_id = int(data["properties"]["events"]["on_member_join"]["welcome_channel"])
+    channel = await client.fetch_channel(channel_id)
+    rule_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["rules_channel"])
+    info_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["info_channel"])
+    await channel.send("Hey <@" + str(member.id) + "> schön dass du auf Fabsi's Server gejoint bis, lies dir bitte die Regeln in <#" + str(rule_channel.id) + "> durch und schau in <#" + str(info_channel.id) + "> für mehr Informationen.")
+    new_member_role = discord.utils.get(member.guild.roles, id=int(data["properties"]["events"]["on_member_join"]["role"]))
+    await member.add_roles(new_member_role)
+
+
 @client.listen('on_message')
 async def blacklist(message):
     blacklist = data["properties"]["events"]["blacklist"]["blacklist"]
     for x in blacklist:
         if x in message.content:
             await message.channel.send("<@&889822969596088320> Die Nachricht verwendet geblockte Wörter") 
+            
+
+@client.event
+async def on_reaction_add(reaction, user):
+    channel = reaction.message.channel
+    # JUST FOR DEBUGGING
+    # print(reaction)
+    # print(data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"])
+    # print(user)
+    # print(reaction.message.channel)
+    if reaction.emoji == data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"] and channel.id == int(data["properties"]["events"]["on_reaction_add"]["verify"]["channel"]):
+        member_role = discord.utils.get(user.guild.roles, id=int(data["properties"]["events"]["on_reaction_add"]["verify"]["role"]))
+        new_member_role = discord.utils.get(user.guild.roles, id=int(data["properties"]["events"]["on_member_join"]["role"]))
+        await user.remove_roles(new_member_role)
+        await user.add_roles(member_role)
 
 # Commands ---------------------------------------------------------------------------
 
