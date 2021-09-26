@@ -130,10 +130,11 @@ async def send_deleted_msgs(amount, channel):
 async def verify(ctx):
     if await check_permissions("clear", ctx.message.author, ctx.channel):
         verify_emoji = data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"]
-        await ctx.channel.purge()
+        channel = client.get_channel(data["properties"]["events"]["on_reaction_add"]["verify"]["channel"])
+        await channel.purge()
         verify_embed = discord.Embed(colour=discord.Colour(0x29485e), 
                         description="By clicking/tapping on " + verify_emoji + " below, you agree with the rules on this server.")
-        msg = await ctx.channel.send(embed=verify_embed)
+        msg = await channel.send(embed=verify_embed)
         await msg.add_reaction(verify_emoji)
     else:
         await ctx.message.delete()
