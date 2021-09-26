@@ -1,7 +1,6 @@
 from os import scandir
 import discord
 from discord import Member
-from discord import message
 from discord.ext import commands
 import discord.utils
 import asyncio
@@ -102,7 +101,7 @@ async def on_member_join(member):
     channel = await client.fetch_channel(channel_id)
     rule_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["rules_channel"])
     info_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["info_channel"])
-    await channel.send("Hey <@" + str(member.id) + "> schön dass du auf Fabsi's Server gejoint bis, lies dir bitte die Regeln in <#" + str(rule_channel.id) + "> durch und schau in <#" + str(info_channel.id) + "> für mehr Informationen")
+    await channel.send("Hey <@" + str(member.id) + "> schön dass du auf Fabsi's Server gejoint bis, lies dir bitte die Regeln in <#" + str(rule_channel.id) + "> durch und schau in <#" + str(info_channel.id) + "> für mehr Informationen.")
 
 
 
@@ -141,6 +140,10 @@ async def blacklist(message):
         if x in message.content:
             await message.channel.send("<@&889822969596088320> Die Nachricht verwendet geblockte Wörter") 
 
+# @client.listen("on_reaction_add")
+# async def reaction_role(reaction):
+
+
 # Help Command ---------------------------------------------------------------------------
 
 @client.command(pass_context=True, aliases=list(data["properties"]["commands"]["help"]["aliases"]))
@@ -170,9 +173,20 @@ async def stage(ctx, *, name):
         name = "🔴 " + name
         s_channel = await ctx.guild.create_stage_channel(name, category=category, position=1)
         # await s_channel.set_permissions(s_channel, overwrite=None)
-        await ctx.channel.send("Created Stage channel: " + name)
+        msg = await ctx.channel.send("Created Stage channel: " + name)
+        await asyncio.sleep(4)
+        await msg.delete()
     else:
         await ctx.message.delete()
+
+@client.command()
+async def delstage(ctx):
+    category = discord.utils.get(ctx.guild.categories, name="-- 🔴 Record/Live --")
+    for channel in category.stage_channels:
+        await channel.delete()
+        msg = await ctx.send('Deleted: %s' % (channel.name))
+        await asyncio.sleep(4)
+        await msg.delete()
 
 @client.command(aliases=data["properties"]["commands"]["social_media"]["aliases"])
 async def social_media(ctx):
