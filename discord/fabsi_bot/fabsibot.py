@@ -139,7 +139,6 @@ async def verify(ctx):
         await ctx.message.delete()
 
 
-
 @client.command(aliases=data["properties"]["commands"]["rules"]["aliases"])
 async def rules(ctx):
     if await check_permissions("rules", ctx.message.author, ctx.message.channel):
