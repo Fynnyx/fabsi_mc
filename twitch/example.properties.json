@@ -1,0 +1,24 @@
+{
+    "properties": {
+        "client_secret": "",
+        "token": "",
+        "channel": "Fabsi_MC",
+        "prefix": "-",
+        "initial_channels": [
+            "fabsi_mc"
+        ],
+        "social_media": {
+            "discord": "https://discord.gg/9VCKxCZgKW",
+            "twitch": "https://twitch.tv/fabsi_mc /  𝔽𝕒𝕓𝕤𝕚_𝕄ℂ#5248"
+        },
+        "routines": {
+            "information": {
+                "time": 60,
+                "messages": [
+                    "Wusstest du das Fabsi ein Discord hat? DC: https://discord.gg/9VCKxCZgKW",
+                    "Hilf Fabsi zu wachsen und lass ein Follow da ❤"
+                ]
+            }
+        }
+    }
+}
