@@ -29,6 +29,8 @@ async def info_rout():
     messages = data["properties"]["routines"]["information"]["messages"]
     index = random.randint(0, len(messages)-1)
     print(messages[index])
+    chan = bot.get_channel("fabsi_mc")
+    await chan.send("words") 
     # ctx.send(messages[index])
 
 
