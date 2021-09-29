@@ -1,6 +1,3 @@
-from itertools import count
-from operator import add
-from os import scandir
 import discord
 from discord import Member
 from discord import channel
@@ -139,7 +136,6 @@ async def verify(ctx):
         await ctx.message.delete()
 
 
-
 @client.command(aliases=data["properties"]["commands"]["rules"]["aliases"])
 async def rules(ctx):
     if await check_permissions("rules", ctx.message.author, ctx.message.channel):
@@ -151,7 +147,7 @@ async def rules(ctx):
             counter = 1
 
             rules_embed = discord.Embed(title="-- Regeln für Fabsi's Discord --",
-                                            description="Im folgenden Text werden die Regeln des BastiGHG Discord Server aufgelistet.\n**Wenn du mit dem Discord Server interagierst (schreiben, reden, lesen, usw.), stimmst Du den Regeln zu!**", 
+                                            description="Im folgenden Text werden die Regeln des Fabsi's Discord Server aufgelistet.\n**Wenn du mit dem Discord Server interagierst (schreiben, reden, lesen, usw.), stimmst Du den Regeln zu!**", 
                                             color=discord.Color.dark_purple())
             rules_embed.add_field(name="§%s - |" % (str(counter)),
                                     value="Die [Discord Nutzungsbedingungen](https://discord.com/terms) müssen, wie die [Discord Community-Richtlinien](https://discord.com/guidelines) befolgt werden.",

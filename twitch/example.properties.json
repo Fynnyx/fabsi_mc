@@ -1,0 +1,14 @@
+{"properties": {
+    "client_secret": "",
+    "token": "",
+    "nick": "Fabsi Chatbot",
+    "prefix": "!",
+    "initial_channels": [
+        "fabsi_mc",
+        "fynnyx"
+    ],
+    "social_media": {
+        "discord": "https://discord.gg/9VCKxCZgKW",
+        "twitch": "https://twitch.tv/fabsi_mc /  𝔽𝕒𝕓𝕤𝕚_𝕄ℂ#5248"
+    }
+}}
