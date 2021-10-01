@@ -2,7 +2,8 @@
     "properties": {
         "client_secret": "",
         "token": "",
-        "channel": "Fabsi_MC",
+        "nick": "FabsiChatBot",
+        "channel": "fabsi_mc",
         "prefix": "-",
         "initial_channels": [
             "fabsi_mc"
@@ -14,9 +15,35 @@
         "routines": {
             "information": {
                 "time": 60,
+                "default": false,
                 "messages": [
                     "Wusstest du das Fabsi ein Discord hat? DC: https://discord.gg/9VCKxCZgKW",
                     "Hilf Fabsi zu wachsen und lass ein Follow da ❤"
+                ]
+            },
+            "update_data": {
+                "time": 10
+            }
+        },
+        "commands": {
+            "enable_info": {
+                "description": "Enable information routine.",
+                "aliases": [
+                    "einfo"
+                ],
+                "permissions": [
+                    "Braodcaster",
+                    "Moderator"
+                ]
+            },
+            "disable_info": {
+                "description": "Disable information routine.",
+                "aliases": [
+                    "dinfo"
+                ],
+                "permissions": [
+                    "Braodcaster",
+                    "Moderator"
                 ]
             }
         }
