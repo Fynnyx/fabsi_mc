@@ -24,15 +24,18 @@ async def event_ready():
     # global variables
     global isInfoEnabled
     isInfoEnabled = data["properties"]["routines"]["information"]["default"]
+    global bot_nick
+    bot_nick = data["properties"]["nick"]
 
     # Start routines
     info_rout.start()
+    update_json.start()
 
 
 # Routines ---------------------------------------------------------------------------
 
 @routines.routine(seconds=data["properties"]["routines"]["update_data"]["time"])
-async def update_json(ctx):
+async def update_json():
     with open("properties.json", encoding='UTF-8') as f:
         global data
         data = json.load(f)
@@ -61,29 +64,5 @@ async def info_rout():
 
 
 # Commands ---------------------------------------------------------------------------
-
-
-# @bot.event()
-# async def event_message(ctx):
-    # print(ctx.author.name)
-    # print(ctx.content)
-
-@bot.command()
-async def test(ctx):
-    print("Test"),
-    print(ctx.author),
-    print(ctx.channel)
-
-@bot.command()
-async def dc(ctx):
-    await ctx.send("Fabsi's Discord: %s" % (data["properties"]["social_media"]["discord"]))
-
-# @bot.command()
-# async def followage(ctx, name):
-#     if name:
-        
-#     else:
-#         r = requests.get('https://2g.be/twitch/following.php?user=%s&channel=%s&format=mwdhms' % (ctx.author.name, ctx.channel.name)) 
-#     await ctx.send(r.text)
 
 bot.run()
