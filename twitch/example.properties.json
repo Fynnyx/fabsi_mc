@@ -9,8 +9,8 @@
             "fabsi_mc"
         ],
         "social_media": {
-            "discord": "https://discord.gg/9VCKxCZgKW",
-            "twitch": "https://twitch.tv/fabsi_mc /  𝔽𝕒𝕓𝕤𝕚_𝕄ℂ#5248"
+            "discord": "https://discord.gg/9VCKxCZgKW / 𝔽𝕒𝕓𝕤𝕚_𝕄ℂ#5248",
+            "twitch": "https://twitch.tv/fabsi_mc"
         },
         "routines": {
             "information": {
@@ -18,7 +18,8 @@
                 "default": false,
                 "messages": [
                     "Wusstest du das Fabsi ein Discord hat? DC: https://discord.gg/9VCKxCZgKW",
-                    "Unterstütze Fabsi und lass ein Follow da ❤"
+                    "Unterstütze Fabsi und lass ein Follow da ❤",
+                    "Lusst Fabsi auch finanziell zu unstertützen? Lass gerne ein Sub da (freiwillig)"
                 ]
             },
             "update_data": {

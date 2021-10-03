@@ -120,7 +120,7 @@ async def clear(ctx, amount:str):
         await ctx.message.delete()
 
 async def send_deleted_msgs(amount, channel):
-    msg = await channel.send("🗑Deleted `%s` messages" % amount)
+    msg = 7
     await asyncio.sleep(2)
     await msg.delete()
 
