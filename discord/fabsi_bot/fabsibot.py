@@ -1,11 +1,9 @@
 import discord
 from discord import Member
-from discord import channel
-from discord.ext import commands
+from discord.ext import commands, tasks
 import discord.utils
 import asyncio
 import json
-from discord.webhook import AsyncWebhookAdapter
 import requests
 
 with open("properties.json", encoding='UTF-8') as f:
@@ -28,6 +26,7 @@ client = commands.Bot(command_prefix=PREFIX, help_command=None, intents=intents)
 
 # Functions ---------------------------------------------------------------------------
 
+@tasks.loop(count=None)
 async def status_task():
     messages = data["properties"]["status"]["messages"]
     time = data["properties"]["status"]["time"]    
@@ -92,7 +91,7 @@ async def send_error(error, channel):
 @client.event
 async def on_ready():
     print("FabsiBot: logged in")
-    client.loop.create_task(status_task())
+    await status_task.start()
     # client.loop.create_task(twitch())
 
 # Moderator ---------------------------------------------------------------------------
