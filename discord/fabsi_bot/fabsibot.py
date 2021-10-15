@@ -32,7 +32,7 @@ async def status_task():
     time = data["properties"]["status"]["time"]    
     while True:
         for x in range(len(messages)):
-            await client.change_presence(activity=discord.Game(name=messages[x]))
+            await client.change_presence(activity=discord.Streaming(name="Fabsi MC", ur="https://twitch.tv/fabsi_mc"))
             await asyncio.sleep(time)
 
 
