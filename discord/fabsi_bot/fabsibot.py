@@ -76,8 +76,6 @@ async def twitch_allert():
                 await send_twitch(stream_data, stream_id)
             except NotFound:
                 await send_twitch(stream_data, stream_id)
-    # else:
-        # await ctx.message.delete()
 
 async def send_twitch(stream_data, stream_id):
     data["properties"]["events"]["twitch"]["last_stream_id"] = str(stream_id)
@@ -304,9 +302,8 @@ async def delstage(ctx):
 @client.command(aliases=data["properties"]["commands"]["twitch"]["aliases"])
 async def twitch(ctx):
     if await check_permissions("twitch", ctx.message.author, ctx.message.channel):
-        isLive = await check_isLive()
-        if not isLive:
-            return
+        if await check_isLive():
+            
         else:
             with open("stream.json", "w") as f:
                 f.write(json.dumps(dict(isLive), indent=2))
