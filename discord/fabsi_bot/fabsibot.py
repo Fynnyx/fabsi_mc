@@ -1,11 +1,10 @@
 import discord
-from discord import Member
-from discord import channel
-from discord.ext import commands
+from discord import Member, Message, Intents
+from discord.ext import commands, tasks
+from discord.errors import NotFound
 import discord.utils
 import asyncio
 import json
-from discord.webhook import AsyncWebhookAdapter
 import requests
 
 with open("properties.json", encoding='UTF-8') as f:
@@ -16,6 +15,7 @@ PREFIX = data["properties"]["prefix"]
 
 intents = discord.Intents()
 intents.guilds = True
+intents.guild_messages = True
 intents.members = True
 intents.emojis = True
 intents.messages = True
@@ -28,14 +28,82 @@ client = commands.Bot(command_prefix=PREFIX, help_command=None, intents=intents)
 
 # Functions ---------------------------------------------------------------------------
 
+@tasks.loop(count=None)
 async def status_task():
     messages = data["properties"]["status"]["messages"]
     time = data["properties"]["status"]["time"]    
-    while True:
-        for x in range(len(messages)):
-            await client.change_presence(activity=discord.Game(name=messages[x]))
-            await asyncio.sleep(time)
+    for x in range(len(messages)):
+        await client.change_presence(activity=discord.Game(name=messages[x]))
+        await asyncio.sleep(time)
 
+@tasks.loop(count=None, seconds=20)
+async def twitch_allert():
+    if await check_isLive():
+        stream_data = await check_isLive()
+        with open("stream.json", "w") as f:
+            f.write(json.dumps(dict(stream_data), indent=2))
+        with open("properties.json", encoding='UTF-8') as f:
+            data = json.load(f)
+        with open("stream.json", encoding='UTF-8') as f:
+            stream_data = json.load(f)
+
+        stream_id = stream_data["data"][0]["id"]
+        last_stream_id = data["properties"]["events"]["twitch"]["last_stream_id"]
+
+        if stream_id != last_stream_id:
+            await send_twitch(stream_data, stream_id)
+        
+        # NEEDS TO BE FIXED --------------
+        else:
+            try:
+                name = stream_data["data"][0]["user_name"]
+                user_login = stream_data["data"][0]["user_login"]
+                game = stream_data["data"][0]["game_name"]
+                title = stream_data["data"][0]["title"]
+                thumbnail = stream_data["data"][0]["thumbnail_url"]
+                thumbnail = thumbnail.replace('{width}', '320')
+                thumbnail = thumbnail.replace('{height}', '180')
+                role_id = str(data["properties"]["events"]["twitch"]["twitch_role"])
+
+                new_twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
+                                                url="https://twitch.tv/%s" % (user_login),
+                                                description='<@&' + role_id + '>Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
+                                                color=discord.Color.dark_purple())
+                new_twitch_embed.add_field(name=title, value="-------------------------------------")
+                new_twitch_embed.set_image(url=thumbnail)
+                await twitch_message.edit(embed=new_twitch_embed)
+            except NameError:
+                await send_twitch(stream_data, stream_id)
+            except NotFound:
+                await send_twitch(stream_data, stream_id)
+    # else:
+        # await ctx.message.delete()
+
+async def send_twitch(stream_data, stream_id):
+    data["properties"]["events"]["twitch"]["last_stream_id"] = str(stream_id)
+    with open("properties.json", "w") as f:
+        f.write(json.dumps(data, indent=2))
+
+    name = stream_data["data"][0]["user_name"]
+    user_login = stream_data["data"][0]["user_login"]
+    game = stream_data["data"][0]["game_name"]
+    title = stream_data["data"][0]["title"]
+    thumbnail = stream_data["data"][0]["thumbnail_url"]
+    thumbnail = thumbnail.replace('{width}', '320')
+    thumbnail = thumbnail.replace('{height}', '180')
+    role_id = str(data["properties"]["events"]["twitch"]["twitch_role"])
+
+    twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
+                                    url="https://twitch.tv/%s" % (user_login),
+                                    description='<@&' + role_id + '> Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
+                                    color=discord.Color.dark_purple())
+    twitch_embed.add_field(name=title, value="-------------------------------------")
+    twitch_embed.set_image(url=thumbnail)
+
+    channel = client.get_channel(int(data["properties"]["events"]["twitch"]["twitch_channel"]))
+    # await channel.send("<@&" + role_id + ">")
+    global twitch_message
+    twitch_message = await channel.send(embed=twitch_embed)
 
 async def check_isLive():
 
@@ -92,7 +160,8 @@ async def send_error(error, channel):
 @client.event
 async def on_ready():
     print("FabsiBot: logged in")
-    client.loop.create_task(status_task())
+    status_task.start()
+    twitch_allert.start()
     # client.loop.create_task(twitch())
 
 # Moderator ---------------------------------------------------------------------------
@@ -249,49 +318,25 @@ async def twitch(ctx):
             stream_id = stream_data["data"][0]["id"]
             last_stream_id = data["properties"]["events"]["twitch"]["last_stream_id"]
 
-            # if stream_id != last_stream_id:
-
-            data["properties"]["events"]["twitch"]["last_stream_id"] = str(stream_id)
-            with open("properties.json", "w") as f:
-                f.write(json.dumps(data, indent=2))
-
-            name = stream_data["data"][0]["user_name"]
-            user_login = stream_data["data"][0]["user_login"]
-            game = stream_data["data"][0]["game_name"]
-            title = stream_data["data"][0]["title"]
-            thumbnail = stream_data["data"][0]["thumbnail_url"]
-            thumbnail = thumbnail.replace('{width}', '320')
-            thumbnail = thumbnail.replace('{height}', '180')
-            role_id = str(data["properties"]["events"]["twitch"]["twitch_role"])
-
-            twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
-                                            url="https://twitch.tv/%s" % (user_login),
-                                            description='Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
-                                            color=discord.Color.dark_purple())
-            twitch_embed.add_field(name=title, value="-------------------------------------")
-            twitch_embed.set_image(url=thumbnail)
-
-            channel = client.get_channel(int(data["properties"]["events"]["twitch"]["twitch_channel"]))
-            await channel.send("<@&" + role_id + ">")
-            twitch_message = await channel.send(embed=twitch_embed)
+            if stream_id != last_stream_id:
+                await send_twitch(stream_data, stream_id)
         
-        # NEEDS TO BE FIXED --------------
-        # else: 
-        #     name = stream_data["data"][0]["user_name"]
-        #     user_login = stream_data["data"][0]["user_login"]
-        #     game = stream_data["data"][0]["game_name"]
-        #     title = stream_data["data"][0]["title"]
-        #     thumbnail = stream_data["data"][0]["thumbnail_url"]
-        #     thumbnail = thumbnail.replace('{width}', '320')
-        #     thumbnail = thumbnail.replace('{height}', '180')
+            else: 
+                name = stream_data["data"][0]["user_name"]
+                user_login = stream_data["data"][0]["user_login"]
+                game = stream_data["data"][0]["game_name"]
+                title = stream_data["data"][0]["title"]
+                thumbnail = stream_data["data"][0]["thumbnail_url"]
+                thumbnail = thumbnail.replace('{width}', '320')
+                thumbnail = thumbnail.replace('{height}', '180')
 
-        #     new_twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
-        #                                     url="https://twitch.tv/%s" % (user_login),
-        #                                     description='Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
-        #                                     color=discord.Color.dark_purple())
-        #     new_twitch_embed.add_field(name=title, value="-------------------------------------")
-        #     new_twitch_embed.set_image(url=thumbnail)
-        #     await twitch_message.edit(embed=new_twitch_embed)
+                new_twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
+                                                url="https://twitch.tv/%s" % (user_login),
+                                                description='Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
+                                                color=discord.Color.dark_purple())
+                new_twitch_embed.add_field(name=title, value="-------------------------------------")
+                new_twitch_embed.set_image(url=thumbnail)
+                await twitch_message.edit(embed=new_twitch_embed)
     else:
         await ctx.message.delete()
 
