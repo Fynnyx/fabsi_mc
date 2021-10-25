@@ -103,8 +103,17 @@ async def send_twitch(stream_data, stream_id):
     global twitch_message
     twitch_message = await channel.send(embed=twitch_embed)
 
-async def check_isLive():
+async def send_verify():
+    verify_emoji = data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"]
+    channel = client.get_channel(data["properties"]["events"]["on_reaction_add"]["verify"]["channel"])
+    await channel.purge()
+    verify_embed = discord.Embed(colour=discord.Colour(0x29485e), 
+                    description="By clicking/tapping on " + verify_emoji + " below, you agree with the rules on this server.")
+    msg = await channel.send(embed=verify_embed)
+    await msg.add_reaction(verify_emoji)
 
+
+async def check_isLive():
     with open("properties.json", encoding='UTF-8') as f:
         data = json.load(f)
 
@@ -160,6 +169,7 @@ async def on_ready():
     print("FabsiBot: logged in")
     status_task.start()
     twitch_allert.start()
+    await send_verify()
     # client.loop.create_task(twitch())
 
 # Moderator ---------------------------------------------------------------------------
