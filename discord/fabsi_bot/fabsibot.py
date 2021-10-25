@@ -313,10 +313,9 @@ async def delstage(ctx):
 async def twitch(ctx):
     if await check_permissions("twitch", ctx.message.author, ctx.message.channel):
         if await check_isLive():
-            
-        else:
+            stream_data = await check_isLive()
             with open("stream.json", "w") as f:
-                f.write(json.dumps(dict(isLive), indent=2))
+                f.write(json.dumps(dict(stream_data), indent=2))
             with open("properties.json", encoding='UTF-8') as f:
                 data = json.load(f)
             with open("stream.json", encoding='UTF-8') as f:
