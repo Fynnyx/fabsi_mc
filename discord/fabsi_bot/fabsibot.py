@@ -36,8 +36,17 @@ async def status_task():
             await asyncio.sleep(time)
 
 
-async def check_isLive():
+async def send_verify():
+    verify_emoji = data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"]
+    channel = client.get_channel(data["properties"]["events"]["on_reaction_add"]["verify"]["channel"])
+    await channel.purge()
+    verify_embed = discord.Embed(colour=discord.Colour(0x29485e), 
+                    description="By clicking/tapping on " + verify_emoji + " below, you agree with the rules on this server.")
+    msg = await channel.send(embed=verify_embed)
+    await msg.add_reaction(verify_emoji)
 
+
+async def check_isLive():
     with open("properties.json", encoding='UTF-8') as f:
         data = json.load(f)
 
@@ -91,6 +100,7 @@ async def send_error(error, channel):
 @client.event
 async def on_ready():
     print("FabsiBot: logged in")
+    await send_verify()
     await status_task.start()
     # client.loop.create_task(twitch())
 
