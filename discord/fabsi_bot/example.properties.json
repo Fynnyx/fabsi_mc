@@ -38,8 +38,8 @@
       "twitch": {
         "client_id": "ccoafffxwpx6ossjd1v7xa85e9qts3",
         "client_secret": "aca45bmhhjgmgda1x2m0foskszt1x7",
-        "streamer": "Fabsi_MC",
-        "last_stream_id": "43372316364",
+        "streamer": "fabsi_mclive",
+        "last_stream_id": "43632867372",
         "twitch_channel": 889820230757543968,
         "twitch_role": 889819765311426591
       },
@@ -129,7 +129,9 @@
       },
       "twitch": {
         "description": "Send the twitch link if the streamer is live",
-        "aliases": [],
+        "aliases": [
+          "live"
+        ],
         "permissions": [
           "Server Owner",
           "Moderator"

@@ -33,13 +33,13 @@ async def status_task():
     messages = data["properties"]["status"]["messages"]
     time = data["properties"]["status"]["time"]    
     for x in range(len(messages)):
-        await client.change_presence(activity=discord.Game(name=messages[x]))
+        await client.change_presence(activity=discord.Streaming(name="Fabsi_MClive", url="https://twitch.tv/fabsi_mclive"))
         await asyncio.sleep(time)
 
 @tasks.loop(count=None, seconds=20)
 async def twitch_allert():
+    stream_data = await check_isLive()
     if await check_isLive():
-        stream_data = await check_isLive()
         with open("stream.json", "w") as f:
             f.write(json.dumps(dict(stream_data), indent=2))
         with open("properties.json", encoding='UTF-8') as f:
@@ -168,9 +168,8 @@ async def send_error(error, channel):
 async def on_ready():
     print("FabsiBot: logged in")
     status_task.start()
-    twitch_allert.start()
+    # twitch_allert.start()
     await send_verify()
-    # client.loop.create_task(twitch())
 
 # Moderator ---------------------------------------------------------------------------
 
@@ -323,26 +322,33 @@ async def twitch(ctx):
 
             stream_id = stream_data["data"][0]["id"]
             last_stream_id = data["properties"]["events"]["twitch"]["last_stream_id"]
+            try:
+                if stream_id != last_stream_id:
+                    await send_twitch(stream_data, stream_id)
+            
+                else: 
+                    name = stream_data["data"][0]["user_name"]
+                    user_login = stream_data["data"][0]["user_login"]
+                    game = stream_data["data"][0]["game_name"]
+                    title = stream_data["data"][0]["title"]
+                    thumbnail = stream_data["data"][0]["thumbnail_url"]
+                    thumbnail = thumbnail.replace('{width}', '320')
+                    thumbnail = thumbnail.replace('{height}', '180')
 
-            if stream_id != last_stream_id:
+                    new_twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
+                                                    url="https://twitch.tv/%s" % (user_login),
+                                                    description='Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
+                                                    color=discord.Color.dark_purple())
+                    new_twitch_embed.add_field(name=title, value="-------------------------------------")
+                    new_twitch_embed.set_image(url=thumbnail)
+                    await twitch_message.edit(embed=new_twitch_embed)
+            except NameError:
                 await send_twitch(stream_data, stream_id)
-        
-            else: 
-                name = stream_data["data"][0]["user_name"]
-                user_login = stream_data["data"][0]["user_login"]
-                game = stream_data["data"][0]["game_name"]
-                title = stream_data["data"][0]["title"]
-                thumbnail = stream_data["data"][0]["thumbnail_url"]
-                thumbnail = thumbnail.replace('{width}', '320')
-                thumbnail = thumbnail.replace('{height}', '180')
 
-                new_twitch_embed = discord.Embed(title="🔴 - %s streamt %s - " % (name, game),
-                                                url="https://twitch.tv/%s" % (user_login),
-                                                description='Schaue [hier](https://twitch.tv/%s) vorbei oder klicke oben.\nIch freue mich dich zu sehen' % (user_login), 
-                                                color=discord.Color.dark_purple())
-                new_twitch_embed.add_field(name=title, value="-------------------------------------")
-                new_twitch_embed.set_image(url=thumbnail)
-                await twitch_message.edit(embed=new_twitch_embed)
+        else:
+            await ctx.channel.send("Streamer is not live :cry:")
+            await asyncio.sleep(2)
+            await ctx.message.delete()
     else:
         await ctx.message.delete()
 
