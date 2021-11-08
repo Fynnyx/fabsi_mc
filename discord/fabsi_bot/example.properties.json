@@ -133,7 +133,9 @@
       },
       "twitch": {
         "description": "Send the twitch link if the streamer is live",
-        "aliases": [],
+        "aliases": [
+          "live"
+        ],
         "permissions": [
           "Server Owner",
           "Moderator"
