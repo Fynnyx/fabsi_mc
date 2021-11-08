@@ -33,19 +33,23 @@
         "welcome_channel": 889827780395663371,
         "rules_channel": 889581188933640242,
         "info_channel": 891037486577483806,
-        "role": 891722460804812870
+        "roles": [
+          891722460804812870,
+          889819765311426591
+        ]
       },
       "twitch": {
         "client_id": "ccoafffxwpx6ossjd1v7xa85e9qts3",
         "client_secret": "aca45bmhhjgmgda1x2m0foskszt1x7",
-        "streamer": "fabsi_mclive",
-        "last_stream_id": "43632867372",
+        "streamer": "Fabsi_MC",
+        "last_stream_id": "44197316557",
         "twitch_channel": 889820230757543968,
         "twitch_role": 889819765311426591
       },
       "on_reaction_add": {
         "verify": {
           "role": 889871084042743839,
+          "new_member_role": 891722460804812870,
           "channel": 891723260742492240,
           "emoji": "\u2705"
         }
@@ -129,9 +133,7 @@
       },
       "twitch": {
         "description": "Send the twitch link if the streamer is live",
-        "aliases": [
-          "live"
-        ],
+        "aliases": [],
         "permissions": [
           "Server Owner",
           "Moderator"
