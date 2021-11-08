@@ -256,8 +256,9 @@ async def on_member_join(member):
     rule_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["rules_channel"])
     info_channel = await client.fetch_channel(data["properties"]["events"]["on_member_join"]["info_channel"])
     await channel.send("Hey <@" + str(member.id) + "> schön dass du auf Fabsi's Server gejoint bis, lies dir bitte die Regeln in <#" + str(rule_channel.id) + "> durch und schau in <#" + str(info_channel.id) + "> für mehr Informationen.")
-    new_member_role = discord.utils.get(member.guild.roles, id=int(data["properties"]["events"]["on_member_join"]["role"]))
-    await member.add_roles(new_member_role)
+    for role in data["properties"]["events"]["on_member_join"]["roles"]:
+        join_role = discord.utils.get(member.guild.roles, id=role)
+        await member.add_roles(join_role)
 
 
 @client.listen('on_message')
@@ -278,7 +279,7 @@ async def on_reaction_add(reaction, user):
     # print(reaction.message.channel)
     if reaction.emoji == data["properties"]["events"]["on_reaction_add"]["verify"]["emoji"] and channel.id == int(data["properties"]["events"]["on_reaction_add"]["verify"]["channel"]):
         member_role = discord.utils.get(user.guild.roles, id=int(data["properties"]["events"]["on_reaction_add"]["verify"]["role"]))
-        new_member_role = discord.utils.get(user.guild.roles, id=int(data["properties"]["events"]["on_member_join"]["role"]))
+        new_member_role = discord.utils.get(user.guild.roles, id=int(data["properties"]["events"]["on_reaction_add"]["verify"]["new_member_role"]))
         await user.remove_roles(new_member_role)
         await user.add_roles(member_role)
 
