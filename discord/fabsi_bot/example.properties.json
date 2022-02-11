@@ -40,7 +40,6 @@
       },
       "twitch": {
         "client_id": "ccoafffxwpx6ossjd1v7xa85e9qts3",
-        "client_secret": "aca45bmhhjgmgda1x2m0foskszt1x7",
         "streamer": "Fabsi_MC",
         "last_stream_id": "44197316557",
         "twitch_channel": 889820230757543968,
